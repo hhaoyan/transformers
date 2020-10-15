@@ -656,7 +656,9 @@ class Trainer:
         if model_path and os.path.isfile(os.path.join(model_path, "trainer_state.json")):
             self.state = TrainerState.load_from_json(os.path.join(model_path, "trainer_state.json"))
             epochs_trained = self.state.global_step // num_update_steps_per_epoch
-            steps_trained_in_current_epoch = self.state.global_step % (num_update_steps_per_epoch)
+            steps_trained_in_current_epoch = (
+                self.state.global_step % (num_update_steps_per_epoch)
+            ) * self.args.gradient_accumulation_steps
 
             logger.info("  Continuing training from checkpoint, will skip to saved global_step")
             logger.info("  Continuing training from epoch %d", epochs_trained)
